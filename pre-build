@@ -1,13 +1,12 @@
 #!/bin/bash
-set -e
 
-APP="$1"
-IMAGE="$2"
-SOURCE_ENV_PATH="$HOME/$APP/ENV"
+APP="$1"; IMAGE="$2";
+ENV_FILE="$HOME/$APP/ENV"
 
-if [[ -f "$SOURCE_ENV_PATH" ]]; then
-  echo "-----> Installing ENV in build environment ..."
-  id=$(cat "$SOURCE_ENV_PATH" | docker run -i -a stdin $IMAGE /bin/bash -c "cat >> /app/.env")
+echo "Copying environment variables"
+
+if [[ -f $ENV_FILE ]]; then
+  id=$(cat $ENV_FILE | docker run -i -a stdin $IMAGE /bin/bash -c "mkdir -p /app/.profile.d && cat > /app/.profile.d/app-env.sh")
   test $(docker wait $id) -eq 0
   docker commit $id $IMAGE > /dev/null
 fi
