@@ -1,0 +1,3 @@
+if [[ -f "$HOME/$APP/ENV" ]]; then
+  source "$HOME/$APP/ENV"
+fi
