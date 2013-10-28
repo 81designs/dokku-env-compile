@@ -1,5 +1,12 @@
-if [[ -f "$HOME/$APP/ENV" ]]; then
-  id=$(cat "$HOME/$APP/ENV" | docker run -i -a stdin $IMAGE /bin/bash -c "mkdir -p /app/.profile.d && cat > /app/.profile.d/app-env.sh")
+#!/bin/bash
+
+APP="$1"; IMAGE="$2";
+ENV_FILE="$HOME/$APP/ENV"
+
+echo "Copying environment variables"
+
+if [[ -f $ENV_FILE ]]; then
+  id=$(cat $ENV_FILE | docker run -i -a stdin $IMAGE /bin/bash -c "mkdir -p /app/.profile.d && cat > /app/.profile.d/app-env.sh")
   test $(docker wait $id) -eq 0
   docker commit $id $IMAGE > /dev/null
 fi
